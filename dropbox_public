@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+# Given a filename as the argument, copy its public URL to the clipboard
+# Knocked up in two minutes, probably won't work with funky-looking arguments
+# Mac OS X because we use pbcopy
+
+# Alex Muller <alex@mullr.net>
+
+abort("Provide the filename you want the public URL for!") unless ARGV[0]
+
+if ARGV[0] == "--help" or ARGV[0] == "-h"
+  puts "Usage: dropbox_public file"
+  puts "Copies the URL of a file in your Dropbox/Public/ folder to the clipboard."
+  exit
+end
+
+DROPBOX_BASE = "https://dl.dropbox.com/u/"
+DROPBOX_UID = "23523"
+
+if ARGV[0].include? "Public/"
+  # Full-ish path to file probably (?) provided
+  filename = ARGV[0].gsub(/.*Public\//, "")
+else
+  filename = ARGV[0]
+end
+
+public_url = "#{DROPBOX_BASE}#{DROPBOX_UID}/#{filename}"
+
+`echo '#{public_url}' | pbcopy`
+
+puts `pbpaste`
